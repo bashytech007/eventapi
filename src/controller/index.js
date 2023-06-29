@@ -29,7 +29,7 @@ exports.signup = async (req, res) => {
 
   delete newUser._doc.password
 
-  res.status(200).send({
+  res.status(200).json({
     data: newUser,
   })
 }
@@ -47,11 +47,15 @@ exports.signin = async (req, res) => {
       return res.status(400).send({
         message: 'password is incorrect',
       })
-    const token = jwt.sign({ _id: user._id }, process.env.JWTSECRET, {
-      expiresIn: '1d',
-    })
+    const token = jwt.sign(
+      { _id: user._id, name: user.firstname },
+      process.env.JWTSECRET,
+      {
+        expiresIn: '1d',
+      }
+    )
     delete user.password
-    res.status(200).send({
+    res.status(200).json({
       email: user.email,
       lastname: user.lastname,
       firstname: user.firstname,
